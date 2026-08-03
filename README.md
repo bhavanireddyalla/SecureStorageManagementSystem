@@ -4,13 +4,16 @@ End-to-end storage platform with a shared Node.js backend, React web app, and Re
 
 ## Tech stack
 
-
+| Layer | Technology |
+|-------|------------|
 | Backend | Node.js + Express, JWT, bcrypt, Multer, AWS S3 |
 | Database | Microsoft SQL Server |
 | Web | React 19 + Vite + Tailwind |
-| Mobile | React Native via Expo SDK 54  |
+| Mobile | React Native via **Expo SDK 54** (not bare RN CLI) |
 
+### Why Expo for mobile?
 
+The assignment mentions React Native CLI. This project uses **Expo**, which is still React Native and supports Android/iOS with the same JS APIs. Native `android/` and `ios/` folders are available via Expo prebuild (`npx expo run:android`). Document this choice in your submission email if reviewers expect bare CLI.
 
 ## Project structure
 
@@ -111,6 +114,21 @@ npx expo run:android
 
 Role checks are enforced on the **backend**. Login is shared; UI routes by role after auth.
 
+## Submission links
+
+
+| GitHub | https://github.com/bhavanireddyalla/SecureStorageManagementSystem |
+| Android APK | https://drive.google.com/file/d/1IlbtyFP3f6ZL-SlvsCzySYq9kCvohBu_/view?usp=sharing |
+| APK direct download | https://drive.google.com/uc?export=download&id=1IlbtyFP3f6ZL-SlvsCzySYq9kCvohBu_ |
+| Web app | Optional — run locally from `web/` (see Setup) |
+| Backend API | Optional — run locally from `Backend/` (see Setup) |
+
+## Demo credentials
+
+
+**Admin ----- `bhavs@gmail.com` password: `Bhavs@123` 
+Viewer ---- `testviewer@gmail.com`password: `Test@123` 
+**
 ## Security notes
 
 - Passwords hashed with bcrypt
