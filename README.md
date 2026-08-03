@@ -123,6 +123,4 @@ Role checks are enforced on the **backend**. Login is shared; UI routes by role 
 - Create accounts via Admin **User Management** (`POST /api/users`)
 - Files are not publicly accessible; access requires a valid session
 
-## Demo credentials
 
-Create Admin/Viewer users from the Admin Users screen (or seed your database), then include those credentials in your submission email.
