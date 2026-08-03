@@ -4,16 +4,13 @@ End-to-end storage platform with a shared Node.js backend, React web app, and Re
 
 ## Tech stack
 
-| Layer | Technology |
-|-------|------------|
+
 | Backend | Node.js + Express, JWT, bcrypt, Multer, AWS S3 |
 | Database | Microsoft SQL Server |
 | Web | React 19 + Vite + Tailwind |
-| Mobile | React Native via **Expo SDK 54** (not bare RN CLI) |
+| Mobile | React Native via Expo SDK 54  |
 
-### Why Expo for mobile?
 
-The assignment mentions React Native CLI. This project uses **Expo**, which is still React Native and supports Android/iOS with the same JS APIs. Native `android/` and `ios/` folders are available via Expo prebuild (`npx expo run:android`). Document this choice in your submission email if reviewers expect bare CLI.
 
 ## Project structure
 
