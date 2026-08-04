@@ -1,6 +1,6 @@
 # Secure Storage Management System
 
-End-to-end storage platform with a shared Node.js backend, React web app, and React Native (Expo) mobile app.
+End-to-end storage platform with a shared Node.js backend, React web app, and **React Native CLI** Android app (not Expo).
 
 ## Tech stack
 
@@ -9,11 +9,7 @@ End-to-end storage platform with a shared Node.js backend, React web app, and Re
 | Backend | Node.js + Express, JWT, bcrypt, Multer, AWS S3 |
 | Database | Microsoft SQL Server |
 | Web | React 19 + Vite + Tailwind |
-| Mobile | React Native via **Expo SDK 54** (not bare RN CLI) |
-
-### Why Expo for mobile?
-
-The assignment mentions React Native CLI. This project uses **Expo**, which is still React Native and supports Android/iOS with the same JS APIs. Native `android/` and `ios/` folders are available via Expo prebuild (`npx expo run:android`). Document this choice in your submission email if reviewers expect bare CLI.
+| Mobile | React Native CLI 0.76 (Android) |
 
 ## Project structure
 
@@ -21,8 +17,8 @@ The assignment mentions React Native CLI. This project uses **Expo**, which is s
 SecureStorageManagementSystem/
   Backend/     Express API + S3 + MSSQL
   web/         React website
-  mobile/      Expo React Native app
-  docs/        Postman collection
+  mobile/      React Native CLI Android app
+  docs/        Notes / Postman
 ```
 
 ## Database design (summary)
@@ -30,8 +26,8 @@ SecureStorageManagementSystem/
 - **Users** — UserId, Name, Email, PasswordHash, Role (`admin` | `viewer`)
 - **Folders** — FolderId, FolderName, ParentFolderId (nested folders), CreatedBy
 - **Files** — FileId, FolderId, OriginalName, StoredName/S3 key, FileType, FileSize, UploadedBy
-- Private objects live in **Amazon S3**; metadata only is stored in SQL Server
-- Downloads/previews use **time-limited presigned URLs** (or authenticated stream endpoints)
+- File bytes live in **private Amazon S3**; SQL Server stores metadata only
+- Downloads/previews use **JWT + time-limited S3 presigned URLs**
 
 ## Environment variables
 
@@ -57,17 +53,17 @@ AWS_BUCKET_NAME=...
 VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
-### Mobile (`mobile/.env`)
+### Mobile (`mobile/src/constants/config.ts`)
 
-```env
-# Physical device (same Wi-Fi as your PC):
-EXPO_PUBLIC_API_BASE_URL=http://YOUR_LAN_IP:5000/api
+```ts
+// Physical device (same Wi-Fi as your PC):
+export const API_BASE_URL = 'http://YOUR_LAN_IP:5000/api';
 
-# Android emulator:
-# EXPO_PUBLIC_API_BASE_URL=http://10.0.2.2:5000/api
+// Android emulator:
+// export const API_BASE_URL = 'http://10.0.2.2:5000/api';
 ```
 
-Do **not** commit real secrets. Use the `.env.example` files as templates.
+Do **not** commit real secrets.
 
 ## Setup
 
@@ -89,21 +85,32 @@ cp .env.example .env
 npm run dev
 ```
 
-### 3. Mobile
+### 3. Mobile (React Native CLI)
 
 ```bash
 cd mobile
 npm install
-cp .env.example .env
-# set EXPO_PUBLIC_API_BASE_URL for your device
+# set API URL in src/constants/config.ts
 npm start
 ```
 
-Open with Expo Go, or build Android with:
+In another terminal:
 
 ```bash
-npx expo run:android
+cd mobile
+npm run android
 ```
+
+### Release APK (Windows)
+
+```bash
+cd mobile\android
+.\gradlew.bat assembleRelease
+```
+
+APK output:
+
+`mobile\android\app\build\outputs\apk\release\app-release.apk`
 
 ## Roles
 
@@ -112,16 +119,16 @@ npx expo run:android
 | Admin | Folders/files CRUD, upload, user management, dashboard |
 | Viewer | Browse, search, preview, download only |
 
-Role checks are enforced on the **backend**. Login is shared; UI routes by role after auth.
+Role checks are enforced on the **backend**. One login page; UI routes by role after auth.
 
 ## Submission links
 
 
 | GitHub | https://github.com/bhavanireddyalla/SecureStorageManagementSystem |
-| Android APK | https://drive.google.com/file/d/1IlbtyFP3f6ZL-SlvsCzySYq9kCvohBu_/view?usp=sharing |
-| APK direct download | https://drive.google.com/uc?export=download&id=1IlbtyFP3f6ZL-SlvsCzySYq9kCvohBu_ |
-| Web app | Optional — run locally from `web/` (see Setup) |
-| Backend API | Optional — run locally from `Backend/` (see Setup) |
+| Android APK (React Native CLI) | https://drive.google.com/file/d/18bgAfEIZf1VNGlM34fxdp1pRYcP1qkPs/view?usp=sharing |
+| APK direct download | https://drive.google.com/uc?export=download&id=18bgAfEIZf1VNGlM34fxdp1pRYcP1qkPs |
+| Web app | Optional — run locally from `web/` |
+| Backend API | Optional — run locally from `Backend/` |
 
 ## Demo credentials
 
@@ -134,8 +141,5 @@ Viewer ---- `testviewer@gmail.com`password: `Test@123`
 - Passwords hashed with bcrypt
 - JWT on protected routes
 - Admin-only mutating APIs
-- Public self-registration is disabled (`POST /api/auth/register` requires Admin)
-- Create accounts via Admin **User Management** (`POST /api/users`)
+- Public self-registration disabled; create users via Admin User Management
 - Files are not publicly accessible; access requires a valid session
-
-

@@ -1,4 +1,4 @@
-import * as DocumentPicker from 'expo-document-picker';
+import DocumentPicker, {isCancel} from 'react-native-document-picker';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -165,23 +165,18 @@ export function FilesScreen() {
 
   const pickFile = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        copyToCacheDirectory: true,
-        multiple: false,
+      const asset = await DocumentPicker.pickSingle({
+        copyTo: 'cachesDirectory',
         type: ALLOWED_UPLOAD_TYPES,
       });
 
-      if (result.canceled || !result.assets?.length) {
-        return;
-      }
-
-      const asset = result.assets[0];
-      const mimeType = guessMimeType(asset.name, asset.mimeType);
+      const fileUri = asset.fileCopyUri || asset.uri;
+      const mimeType = guessMimeType(asset.name || 'file', asset.type || undefined);
       const nextFile = {
-        uri: asset.uri,
-        name: asset.name,
+        uri: fileUri,
+        name: asset.name || 'upload.bin',
         mimeType,
-        size: asset.size,
+        size: asset.size ?? undefined,
       };
 
       const validationError = validateUploadFile(nextFile, uploadFolderId || folderOptions[0]?.id || null);
@@ -201,6 +196,9 @@ export function FilesScreen() {
       setUploadError('');
       setMessage(null);
     } catch (error: any) {
+      if (isCancel(error)) {
+        return;
+      }
       setUploadError(getErrorMessage(error, 'Unable to open document picker.'));
     }
   };

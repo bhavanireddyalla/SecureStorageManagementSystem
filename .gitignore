@@ -10,8 +10,10 @@ coverage
 uploads
 Backend/uploads
 web/dist
-mobile/.expo
 mobile/android/app/build
 mobile/android/.gradle
+mobile/android/local.properties
 mobile/ios/build
+_DELETE_*
+*.apk
 .DS_Store
